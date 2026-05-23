@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Client 1 - MQTT</title>
+    <!-- Підключаємо MQTT.js бібліотеку напряму -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #chat { border: 1px solid #ccc; height: 300px; overflow-y: scroll; margin-bottom: 10px; padding: 10px; }
+        input { padding: 8px; width: 60%; }
+        button { padding: 8px 15px; }
+    </style>
+</head>
+<body>
+    <h2>Клієнт 1 (Web 1)</h2>
+    <div id="status">Підключення...</div>
+    
+    <div id="chat"></div>
+    
+    <input type="text" id="messageInput" placeholder="Введіть повідомлення...">
+    <button onclick="sendMessage()">Відправити</button>
+
+    <script>
+        // Підключення до Mosquitto через WebSocket (порт 9001)
+        const client = mqtt.connect('ws://localhost:9001');
+        const topic = 'exam/messages';
+
+        client.on('connect', function () {
+            document.getElementById('status').innerText = 'Статус: Підключено до MQTT Broker';
+            document.getElementById('status').style.color = 'green';
+            // Підписуємося на топік
+            client.subscribe(topic);
+        });
+
+        client.on('message', function (t, message) {
+            const chat = document.getElementById('chat');
+            chat.innerHTML += `<div><strong>Нове повідомлення:</strong> ${message.toString()}</div>`;
+            chat.scrollTop = chat.scrollHeight;
+        });
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const msg = `[Web 1]: ${input.value}`;
+            
+            if(input.value.trim() !== "") {
+                client.publish(topic, msg);
+                input.value = '';
+            }
+        }
+    </script>
+</body>
+</html>

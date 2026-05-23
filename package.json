@@ -1,0 +1,8 @@
+{
+  "name": "event-driven-mqtt-exam",
+  "version": "1.0.0",
+  "description": "Event-Driven architecture with MQTT Mosquitto",
+  "scripts": {
+    "start": "docker-compose up -d"
+  }
+}

@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+
+  web1:
+    image: nginx:alpine
+    ports:
+      - "8081:80"
+    volumes:
+      - ./src/web1:/usr/share/nginx/html
+
+  web2:
+    image: nginx:alpine
+    ports:
+      - "8082:80"
+    volumes:
+      - ./src/web2:/usr/share/nginx/html
